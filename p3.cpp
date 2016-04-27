@@ -11,7 +11,7 @@
 
 using namespace std;
 fstream commands, dates, edges;
-void getDateList(vector<int> datesV, int startYear, int endYear, fstream &dates);
+void getDateList(vector<int> *datesV, int startYear, int endYear, fstream &dates);
 int limit;
 int outDegreeTotal = 0;
 int edgesLines = 0;
@@ -31,7 +31,7 @@ struct adjList {
 
 adjList* adjListArrPointer = new adjList;
 
-void getDateList(vector<int> datesV, int startYear, int endYear, fstream &dates) {
+void getDateList(vector<int> *datesV, int startYear, int endYear, fstream &dates) {
     int patent,year;
     //vector<int> temp;
     while(true) {
@@ -42,7 +42,7 @@ void getDateList(vector<int> datesV, int startYear, int endYear, fstream &dates)
         dates >> year;
 
         if(year <= endYear && year >= startYear) {
-            datesV.push_back(patent);
+            datesV->push_back(patent);
         }
     }
 }
@@ -63,7 +63,7 @@ void endGraph( adjList* adjListArrPointer[] ) {
 
     //free(adjListArrPointer[inRange]);
 }
-
+#ifdef ASLDKFJ
 void graph(vector<int> datesV, fstream& edges, adjList* adjListArr[]) {
     cout<<"here"<<endl;
     int vertex;
@@ -71,8 +71,8 @@ void graph(vector<int> datesV, fstream& edges, adjList* adjListArr[]) {
     limit = datesV.back(); // last element in vector
     inRange = datesV.size(); // number of elements in vector
     adjListArr[inRange];
-    adjList* adjListArrPointer = new adjList;
     cout<<"here1"<<endl;
+    adjList* adjListArrPointer = new adjList;
 
 
     for(int i = 0; i < datesV.size(); i++) {
@@ -139,6 +139,13 @@ void graph(vector<int> datesV, fstream& edges, adjList* adjListArr[]) {
     // did she say that it must be a pointer array or it can be a vector of pointers?
     cout<<"number of edges m: "<<numEdges<<endl;
 }
+#endif
+
+void printVector(vector<int> *v) {
+    for (vector<int>::iterator it = v->begin(); it != v->end(); ++it) {
+        cout << *it << endl;
+    }
+}
 
 int  main(int argc, char *argv[]) {
     edges.open(argv[1], fstream::in);
@@ -146,8 +153,7 @@ int  main(int argc, char *argv[]) {
     commands.open(argv[3], fstream::in);
     int startYear,endYear;
     char token [25];
-    adjList* adjListArr[15];
-    vector<int> datesV;
+   // adjList* adjListArr[15];
 
     while(true) {
         commands >> token;
@@ -157,11 +163,14 @@ int  main(int argc, char *argv[]) {
         else if(strcmp(token, "graph") == 0) {
             commands >> startYear;
             commands >> endYear;
+            vector<int> datesV;
             // creating new vector here initialized with getDateList(startYear, endYear, dates)
-            getDateList(datesV, startYear, endYear, dates);
+            getDateList(&datesV, startYear, endYear, dates);
+            printVector(&datesV);
+            // function to print datesV
             //keyArray[datesV.size()]; // wtf? accessing the element of keyArray which is at position size of datesV
             //adjListArr[datesV.size()]; // wtf? same as above. not doing anything with them though.
-            graph(datesV, edges, adjListArr);
+            //graph(datesV, edges, adjListArr);
             cout<<endl;
         }
         else if(strcmp(token, "out-degree") == 0) {
@@ -226,7 +235,7 @@ int  main(int argc, char *argv[]) {
             cout<<"scc"<<endl;
         }
         else if(strcmp(token, "end-graph") == 0) {
-            endGraph(adjListArr);
+            //endGraph(adjListArr);
             cout<<"hereEnd"<<endl;
         }
     }
