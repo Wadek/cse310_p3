@@ -66,7 +66,6 @@ void graph(vector<int> *datesV, fstream& edges) {
     int pi = 0;
 
     limit = datesV->back(); // last element in vector
-    //inRange = datesV->size(); // number of elements in vector
     vertices = datesV->size();
     adjList **adjListArr = new adjList*[datesV->size()];
 
@@ -153,6 +152,7 @@ int  main(int argc, char *argv[]) {
             vector<int> datesV;
 
             getDateList(&datesV, startYear, endYear, dates);
+            inRange = datesV.size();
             graph(&datesV, edges);
             cout<<endl;
         }
