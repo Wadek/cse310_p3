@@ -13,13 +13,10 @@ using namespace std;
 fstream commands, dates, edges;
 void getDateList(vector<int> *datesV, int startYear, int endYear, fstream &dates);
 int limit;
-int outDegreeTotal = 0;
-int edgesLines = 0;
+//int outDegreeTotal = 0;
 int vertices = 0;
-int numEdges = 0;
 int inRange = 0;
 int largestDegree = 0;
-int pointerIndex = 0;
 vector<int> keyV;
 //int keyArray[0];
 
@@ -63,68 +60,61 @@ void endGraph( adjList* adjListArrPointer[] ) {
 
     //free(adjListArrPointer[inRange]);
 }
-#ifdef ASLDKFJ
-void graph(vector<int> datesV, fstream& edges, adjList* adjListArr[]) {
-    cout<<"here"<<endl;
-    int vertex;
 
-    limit = datesV.back(); // last element in vector
-    inRange = datesV.size(); // number of elements in vector
-    adjListArr[inRange];
-    cout<<"here1"<<endl;
-    adjList* adjListArrPointer = new adjList;
+void graph(vector<int> *datesV, fstream& edges) {
+    int numEdges = 0;
+    int pi = 0;
 
+    limit = datesV->back(); // last element in vector
+    inRange = datesV->size(); // number of elements in vector
+    vertices = datesV->size();
+    adjList **adjListArr = new adjList*[datesV->size()];
 
-    for(int i = 0; i < datesV.size(); i++) {
-        // create a new adjList
-        // put something in it yo
-        // point it to another adjList or have it be pointed to
-        //adjListArr = new adjList;
-        //adjListArr[i] = new adjList; // you gotta lose the array idea
-        adjListArr[i]->val = datesV[i];
+    for(int i = 0; i < datesV->size(); i++) {
+        adjListArr[i] = new adjList();
+        adjListArr[i]->val = (*datesV)[i];
         adjListArr[i]->next = NULL;
-        vertices++;
     }
 
     while(true) {
         int counter = 0;
-        edges >> vertex;
+        edges >> pi;
         if(edges.eof()) {
             break;
         }
-        int node;
-        edges >> node;
-        for(int i=0; i < datesV.size(); i++) {
-            if(vertex == adjListArr[i]->val && node <= limit) {
+        int pj;
+        edges >> pj;
+        for(int i=0; i < datesV->size(); i++) {
+            if(pi == adjListArr[i]->val && pj <= limit) {
                 numEdges++;
                 //keyArray[i] = keyArray[i] + 1;
                 //keyV[i] = keyV[i] + 1;
                 adjList* pointer = adjListArr[i];
-                pointerIndex = 0;
+                int numOfDegrees = 0;
 
                 while(pointer->next != NULL) {
                     pointer = pointer->next;
-                    pointerIndex++;
+                    numOfDegrees++;
                 }
 
-
-                //add to adj list
+                //create container
+                // create new adjList and put pj into val
                 adjList* adjListArrPointer = new adjList;
+                adjListArrPointer->val = pj;
+                // have the last pointer in the list point to the newly allocated adjList element
                 pointer->next = adjListArrPointer;
-                adjListArrPointer->val = node;
 
-                if(pointerIndex > largestDegree) {
-                    largestDegree = pointerIndex+3;
-
+                // check if current head has largest number of edges, if true, become new largestDegree
+                if(numOfDegrees > largestDegree) {
+                    largestDegree = numOfDegrees;
                 }
                 break;
             }
         }
-        edgesLines++;
     }
 
 
-    for(int i = 0; i < datesV.size(); i++) {
+    for(int i = 0; i < datesV->size(); i++) {
         cout<<adjListArr[i]->val<<" ->";
         adjListArrPointer = adjListArr[i]->next;
         while(adjListArrPointer != NULL) {
@@ -139,7 +129,6 @@ void graph(vector<int> datesV, fstream& edges, adjList* adjListArr[]) {
     // did she say that it must be a pointer array or it can be a vector of pointers?
     cout<<"number of edges m: "<<numEdges<<endl;
 }
-#endif
 
 void printVector(vector<int> *v) {
     for (vector<int>::iterator it = v->begin(); it != v->end(); ++it) {
@@ -148,6 +137,10 @@ void printVector(vector<int> *v) {
 }
 
 int  main(int argc, char *argv[]) {
+    if (argc != 4) {
+        cout << "Usage: ./a.out edges1.txt dates1.txt commands1.txt" << endl;
+        return 0;
+    }
     edges.open(argv[1], fstream::in);
     dates.open(argv[2], fstream::in);
     commands.open(argv[3], fstream::in);
@@ -166,11 +159,7 @@ int  main(int argc, char *argv[]) {
             vector<int> datesV;
             // creating new vector here initialized with getDateList(startYear, endYear, dates)
             getDateList(&datesV, startYear, endYear, dates);
-            printVector(&datesV);
-            // function to print datesV
-            //keyArray[datesV.size()]; // wtf? accessing the element of keyArray which is at position size of datesV
-            //adjListArr[datesV.size()]; // wtf? same as above. not doing anything with them though.
-            //graph(datesV, edges, adjListArr);
+            graph(&datesV, edges);
             cout<<endl;
         }
         else if(strcmp(token, "out-degree") == 0) {
@@ -239,6 +228,7 @@ int  main(int argc, char *argv[]) {
             cout<<"hereEnd"<<endl;
         }
     }
+    return 0;
 }
 
 
