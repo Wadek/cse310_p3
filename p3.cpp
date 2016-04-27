@@ -66,7 +66,7 @@ void graph(vector<int> *datesV, fstream& edges) {
     int pi = 0;
 
     limit = datesV->back(); // last element in vector
-    inRange = datesV->size(); // number of elements in vector
+    //inRange = datesV->size(); // number of elements in vector
     vertices = datesV->size();
     adjList **adjListArr = new adjList*[datesV->size()];
 
@@ -87,8 +87,6 @@ void graph(vector<int> *datesV, fstream& edges) {
         for(int i=0; i < datesV->size(); i++) {
             if(pi == adjListArr[i]->val && pj <= limit) {
                 numEdges++;
-                //keyArray[i] = keyArray[i] + 1;
-                //keyV[i] = keyV[i] + 1;
                 adjList* pointer = adjListArr[i];
                 int numOfDegrees = 0;
 
@@ -97,7 +95,6 @@ void graph(vector<int> *datesV, fstream& edges) {
                     numOfDegrees++;
                 }
 
-                //create container
                 // create new adjList and put pj into val
                 adjList* adjListArrPointer = new adjList;
                 adjListArrPointer->val = pj;
@@ -124,9 +121,7 @@ void graph(vector<int> *datesV, fstream& edges) {
         cout<<endl;
     }
 
-    cout<<"number of vertices n: "<<vertices<<endl; // this is the size of the pointer array
-    // can we figure this out right at the beginning?
-    // did she say that it must be a pointer array or it can be a vector of pointers?
+    cout<<"number of vertices n: "<<vertices<<endl;
     cout<<"number of edges m: "<<numEdges<<endl;
 }
 
@@ -146,7 +141,6 @@ int  main(int argc, char *argv[]) {
     commands.open(argv[3], fstream::in);
     int startYear,endYear;
     char token [25];
-   // adjList* adjListArr[15];
 
     while(true) {
         commands >> token;
@@ -157,7 +151,7 @@ int  main(int argc, char *argv[]) {
             commands >> startYear;
             commands >> endYear;
             vector<int> datesV;
-            // creating new vector here initialized with getDateList(startYear, endYear, dates)
+
             getDateList(&datesV, startYear, endYear, dates);
             graph(&datesV, edges);
             cout<<endl;
