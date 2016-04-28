@@ -12,13 +12,13 @@
 using namespace std;
 fstream commands, dates, edges;
 void getDateList(vector<int> *datesV, int startYear, int endYear, fstream &dates);
+void printGraph();
 int limit;
 //int outDegreeTotal = 0;
 int vertices = 0;
 int inRange = 0;
+int numEdges = 0;
 int largestDegree = 0;
-vector<int> keyV;
-//int keyArray[0];
 
 // single linked list
 struct adjList {
@@ -26,7 +26,7 @@ struct adjList {
     adjList* next;
 };
 
-adjList* adjListArrPointer = new adjList;
+adjList** adjListArrPointer(NULL);
 
 void getDateList(vector<int> *datesV, int startYear, int endYear, fstream &dates) {
     int patent,year;
@@ -62,12 +62,12 @@ void endGraph( adjList* adjListArrPointer[] ) {
 }
 
 void graph(vector<int> *datesV, fstream& edges) {
-    int numEdges = 0;
     int pi = 0;
 
     limit = datesV->back(); // last element in vector
     vertices = datesV->size();
     adjList **adjListArr = new adjList*[datesV->size()];
+    adjListArrPointer = adjListArr;
 
     for(int i = 0; i < datesV->size(); i++) {
         adjListArr[i] = new adjList();
@@ -95,10 +95,10 @@ void graph(vector<int> *datesV, fstream& edges) {
                 }
 
                 // create new adjList and put pj into val
-                adjList* adjListArrPointer = new adjList;
-                adjListArrPointer->val = pj;
+                adjList* newAdjList = new adjList;
+                newAdjList ->val = pj;
                 // have the last pointer in the list point to the newly allocated adjList element
-                pointer->next = adjListArrPointer;
+                pointer->next = newAdjList;
 
                 // check if current head has largest number of edges, if true, become new largestDegree
                 if(numOfDegrees > largestDegree) {
@@ -109,19 +109,42 @@ void graph(vector<int> *datesV, fstream& edges) {
         }
     }
 
-
-    for(int i = 0; i < datesV->size(); i++) {
-        cout<<adjListArr[i]->val<<" ->";
-        adjListArrPointer = adjListArr[i]->next;
-        while(adjListArrPointer != NULL) {
-            cout<<adjListArrPointer->val<<" ->";
-            adjListArrPointer = adjListArrPointer->next;
-        }
-        cout<<endl;
-    }
+    printGraph();
 
     cout<<"number of vertices n: "<<vertices<<endl;
     cout<<"number of edges m: "<<numEdges<<endl;
+}
+
+void printGraph() {
+    for(int i = 0; i < vertices; i++) {
+        adjList *ptr = adjListArrPointer[i];
+
+        cout<<ptr->val<<" ->";
+        ptr = ptr->next;
+        while(ptr != NULL) {
+            cout<<ptr->val<<" ->";
+            ptr = ptr->next;
+        }
+        cout<<endl;
+    }
+}
+
+void printOutDegree(unsigned int outDegree) {
+    unsigned int count = 0;
+
+    for(int i = 0; i < vertices; i++) {
+        unsigned int degrees = 0;
+        adjList *ptr = adjListArrPointer[i];
+        ptr = ptr->next;
+        while(ptr != NULL) {
+            ptr = ptr->next;
+            degrees++;
+        }
+        if (degrees == outDegree) {
+            count++;
+        }
+    }
+    cout<<"Out-Degree " << outDegree << " count: "<< count <<endl;
 }
 
 void printVector(vector<int> *v) {
@@ -157,62 +180,25 @@ int  main(int argc, char *argv[]) {
             cout<<endl;
         }
         else if(strcmp(token, "out-degree") == 0) {
+            printOutDegree(0);
+            printOutDegree(1);
+            printOutDegree(2);
+            printOutDegree(3);
+            printOutDegree(4);
+            printOutDegree(5);
+            printOutDegree(6);
+            printOutDegree(7);
+            printOutDegree(8);
+            printOutDegree(9);
 
-            int c1 = count(keyV.begin(),keyV.end(),1);
-            int c2 = count(keyV.begin(),keyV.end(),2);
-            int c3 = count(keyV.begin(),keyV.end(),3);
-            int c4 = count(keyV.begin(),keyV.end(),4);
-            int c5 = count(keyV.begin(),keyV.end(),5);
-            int c6 = count(keyV.begin(),keyV.end(),6);
-            int c7 = count(keyV.begin(),keyV.end(),7);
-            int c8 = count(keyV.begin(),keyV.end(),8);
-            int c9 = count(keyV.begin(),keyV.end(),9);
-            int exists = 0;
-            cout<<"Out-Degree 0 count: "<<(inRange+1)- vertices<<endl;
-            if(c1) {
-                cout<<"Out-Degree 1 count: "<<c1<<endl;
-                exists++;
-            }
-            if(c2) {
-                cout<<"Out-Degree 2 count: "<<c2<<endl;
-                exists++;
-            }
-            if(c3) {
-                cout<<"Out-Degree 3 count: "<<c3<<endl;
-                exists++;
-            }
-            if(c4) {
-                cout<<"Out-Degree 4 count: "<<c4<<endl;
-                exists++;
-            }
-            if(c5) {
-                cout<<"Out-Degree 5 count: "<<c5<<endl;
-                exists++;
-            }
-            if(c6) {
-                cout<<"Out-Degree 6 count: "<<c6<<endl;
-                exists++;
-            }
-            if(c7) {
-                cout<<"Out-Degree 7 count: "<<c7<<endl;
-                exists++;
-            }
-            if(c8) {
-                cout<<"Out-Degree 8 count: "<<c8<<endl;
-                exists++;
-            }
-            if(c9) {
-                cout<<"Out-Degree 9 count: "<<c9<<endl;
-                exists++;
-            }
-            int averageOut = (c1+c2+c3+c4+c5+c6+c7+c8+c9)/exists;
+            int averageOut = numEdges/vertices;
             cout<<"the average out degree: "<<averageOut<<endl;
         }
         else if(strcmp(token, "shortest-path") == 0) {
 
         }
-        else if(strcmp(token, "diamater") == 0) {
-            cout<<"diatmeter"<<endl;
+        else if(strcmp(token, "diameter") == 0) {
+            cout<<"diameter"<<endl;
         }
         else if(strcmp(token, "scc") == 0) {
             cout<<"scc"<<endl;
