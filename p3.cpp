@@ -101,8 +101,8 @@ void graph(vector<int> *datesV, fstream& edges) {
                 pointer->next = newAdjList;
 
                 // check if current head has largest number of edges, if true, become new largestDegree
-                if(numOfDegrees > largestDegree) {
-                    largestDegree = numOfDegrees;
+                if(numOfDegrees >= largestDegree) {
+                    largestDegree = numOfDegrees+3;
                 }
                 break;
             }
@@ -180,16 +180,9 @@ int  main(int argc, char *argv[]) {
             cout<<endl;
         }
         else if(strcmp(token, "out-degree") == 0) {
-            printOutDegree(0);
-            printOutDegree(1);
-            printOutDegree(2);
-            printOutDegree(3);
-            printOutDegree(4);
-            printOutDegree(5);
-            printOutDegree(6);
-            printOutDegree(7);
-            printOutDegree(8);
-            printOutDegree(9);
+            for(int i = 0; i <= largestDegree; i++) {
+            printOutDegree(i);
+            }
 
             int averageOut = numEdges/vertices;
             cout<<"the average out degree: "<<averageOut<<endl;
