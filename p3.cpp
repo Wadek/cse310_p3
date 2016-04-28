@@ -8,6 +8,8 @@
 #include <string.h>
 #include <math.h>
 #include <algorithm>
+#include <queue>
+#include <cstdio>
 
 using namespace std;
 fstream commands, dates, edges;
@@ -153,6 +155,44 @@ void printVector(vector<int> *v) {
     }
 }
 
+/*
+void shortestPath(int s, int t) {
+    vector<int> queue, prev, dist, container;
+
+    //populate initial vectors
+    for(int i = 0; i < vertices; i++) {
+        adjList *ptr = adjListArrPointer[i];
+        queue.push_back(ptr->val);
+        container.push_back(ptr->val);
+        prev.push_back(0);
+        prev.push_back(-1);
+    }
+
+
+    int u = s;
+    adjList *current = adjListArrPointer[0];
+    while(!queue.empty()) {
+        //find first current value
+        for(int i = 0; i < vertices; i++) {
+            if(u == adjListArrPointer[i]->val) {
+                current = adjListArrPointer[i];
+            }
+        }
+
+        //find all neighbors of current update distance by adding 1
+        while(current != NULL) {
+            current = current->next;
+            for(int i = 0; i < vertices; i++) {
+                if(current->val == container[i]) {
+                    dist[i] = dist[i]+1;
+                }
+            }
+        }
+    }
+}
+*/
+
+
 int  main(int argc, char *argv[]) {
     if (argc != 4) {
         cout << "Usage: ./a.out edges1.txt dates1.txt commands1.txt" << endl;
@@ -181,13 +221,17 @@ int  main(int argc, char *argv[]) {
         }
         else if(strcmp(token, "out-degree") == 0) {
             for(int i = 0; i <= largestDegree; i++) {
-            printOutDegree(i);
+                printOutDegree(i);
             }
 
             int averageOut = numEdges/vertices;
             cout<<"the average out degree: "<<averageOut<<endl;
         }
         else if(strcmp(token, "shortest-path") == 0) {
+            int s, t;
+            commands >> s;
+            commands >> t;
+            shortestPath(s, t);
 
         }
         else if(strcmp(token, "diameter") == 0) {
